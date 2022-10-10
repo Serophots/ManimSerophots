@@ -11,12 +11,12 @@ class BetterAngle(Sector, ABC):
         return BetterAngle(Line(B, A), Line(B, C), **kwargs)
 
     def __init__(self, line1: Line, line2: Line, other_angle: bool = False, **kwargs):
-        if numpy.array_equal(line1.get_start(), line2.get_start()):
+        if numpy.array_equal(line1.get_start(), line2.get_start()): #Allows for parralel lines (180 degrees)
             intersection = line1.get_start()
         elif numpy.array_equal(line1.get_end(), line2.get_end()):
             intersection = line1.get_end()
         else:
-            # Can through ValueError, which is why other checks exist
+            # Can throw ValueError, which is why other checks exist
             intersection = line_intersection(
                 [line1.get_start(), line1.get_end()],
                 [line2.get_start(), line2.get_end()],

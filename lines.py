@@ -29,14 +29,14 @@ class LineEquation:
         m = LineEquation.calcGradient(p1,p2)
         return LineEquation(m, LineEquation.calcYIntercept(p1[1], p1[0], m))
     @staticmethod
-    def perpendicularTo(line: Line) -> LineEquation:
+    def perpendicularTo(line: Line) -> LineEquation: #Chain with .setIntercept or .setInterceptFromPoint
         return LineEquation(-1/LineEquation.calcGradientFromLine(line), 0)
 
 
     def __init__(self, m, c):
         self.m = m; self.c = c
 
-    def setIntercept(self, c): self.c = c
+    def setIntercept(self, c): self.c = c; return self
     def setInterceptFromPoint(self, x, y):
         self.c = -self.m*x + y
         return self
@@ -48,12 +48,12 @@ class LineEquation:
 
 def getPointOnLinePoints(relativePosition, p1, p2):
     return LineEquation.fromPoints(p1, p2).coordinateFromX((p2[0] - p1[0]) * relativePosition + p1[0])
-def getPointOnLine(relativePosition, line: Line):
+def getPointOnLine(relativePosition, line: Line): #When relativePosition=0, point 1 of line is returned, when relativePosition=1, point2 is returned (All values inbetween + outbetween)
     return getPointOnLinePoints(relativePosition, line.get_start(), line.get_end())
 
 class PerpendicularLine(Line, ABC):
     def __init__(self, line:Line, relativePosition: float =0.5, length: float=0.2, **kwargs):
         throughPoint = getPointOnLine(relativePosition, line) #Point to draw perpendicular line on
         lineEquation = LineEquation.perpendicularTo(line).setInterceptFromPoint(throughPoint[0], throughPoint[1]) #Line equation for perpendicular line, correctly positioned
-        xbuffer = math.sqrt(((length/2)**2)/(1+lineEquation.m**2)) # Take x of throughpoint, plus/minus this buffer to retreive X points to create line of that length https://www.desmos.com/calculator/4bsdspj5u7
+        xbuffer = math.sqrt(((length/2)**2)/(1+lineEquation.m**2)) # Take x of throughpoint, plus/minus this buffer to retreive X points to create line of that length Explanation I made: https://www.desmos.com/calculator/4bsdspj5u7
         super().__init__(lineEquation.coordinateFromX(throughPoint[0] - xbuffer), lineEquation.coordinateFromX(throughPoint[0] + xbuffer), **kwargs)
