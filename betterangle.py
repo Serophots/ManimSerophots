@@ -5,6 +5,19 @@ from manim import *
 from abc import ABC
 
 
+def AngleLabel(self: DecimalNumber | Text | VMobject, angle: BetterAngle, radius: float):
+    self.midpoint = angle.get_midpoint()
+    self.center = angle.arc_center
+    self.direction = self.midpoint - self.center
+
+    if radius == 0:
+        self.move_to(midpoint)
+    else:
+        self.move_to(self.center + (self.direction * radius))
+    self.scale(0.6)
+    return self
+
+
 class BetterAngle(Sector, ABC):
     @staticmethod
     def from_three_points(A: np.ndarray | list[int], B: np.ndarray | list[int], C: np.ndarray | list[int], **kwargs) -> BetterAngle:
@@ -37,3 +50,8 @@ class BetterAngle(Sector, ABC):
         super().__init__(angle=angle, start_angle=start_angle, arc_center=intersection, **kwargs)
         line1.z_index=self.z_index+1 #Perhaps problematic
         line2.z_index=self.z_index+1
+
+    def numberLabel(self, radius=0.7, unit = "^{\circ}", num_decimal_places = 0, **kwargs) -> DecimalAngleLabel:
+        return AngleLabel(DecimalNumber(unit=unit, num_decimal_places=num_decimal_places, **kwargs), self, radius)
+    def textLabel(self, radius=0.7, **kwargs) -> TextAngleLabel:
+        return AngleLabel(Text(**kwargs), self, radius)
