@@ -30,6 +30,10 @@ class BetterAngle(Sector, ABC):
         angle = abs(anglev1-anglev2)
         start_angle = min(anglev1,anglev2)
 
+        if other_angle:
+            start_angle = max(anglev1,anglev2)
+            angle=(2*PI)-angle
+
         super().__init__(angle=angle, start_angle=start_angle, arc_center=intersection, **kwargs)
         line1.z_index=self.z_index+1 #Perhaps problematic
         line2.z_index=self.z_index+1
